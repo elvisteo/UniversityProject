@@ -70,11 +70,31 @@ namespace UniversityProject.Controllers
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] string? Id, [FromQuery] string? Name, [FromQuery] string? country, [FromQuery] string? webpage)
         {
-            var university = _context.Universities.ToList();
+            var university = _context.Universities.AsQueryable();
 
-            return Ok(university);
+            if (!string.IsNullOrEmpty(Id))
+            {
+                university = university.Where(a => a.Id.Contains(Id));
+            }
+
+            if (!string.IsNullOrEmpty(Name))
+            {
+                university = university.Where(a => a.Name.Contains(Name));
+            }
+
+            if (!string.IsNullOrEmpty(country))
+            {
+                university = university.Where(a => a.Country.Contains(country));
+            }
+
+            if (!string.IsNullOrEmpty(webpage))
+            {
+                university = university.Where(a => a.Webpages.Contains(webpage));
+            }
+
+            return Ok(university.ToList());
         }
 
         [HttpGet("{id}")]
